@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+
+	"github.com/kr/pretty"
+)
 
 type Option struct {
 	Text string `json:"text"`
@@ -13,6 +19,17 @@ type StoryArc struct {
 	Options []Option `json:"options"`
 }
 
+type Adventure map[string]StoryArc
+
 func main() {
-	fmt.Println("Hello, world!")
+	adventureBytes, err := os.ReadFile("adventure.json")
+	if err != nil {
+		fmt.Printf("error reading adventure: %s\n", err)
+	}
+
+	var adventure Adventure
+	json.Unmarshal(adventureBytes, &adventure)
+
+	fmt.Println("adventure:")
+	pretty.Println(adventure)
 }
