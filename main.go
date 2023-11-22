@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 	"os"
-
-	"github.com/kr/pretty"
+	"strings"
 )
 
 type Option struct {
@@ -21,15 +22,36 @@ type StoryArc struct {
 
 type Adventure map[string]StoryArc
 
-func main() {
-	adventureBytes, err := os.ReadFile("adventure.json")
-	if err != nil {
-		fmt.Printf("error reading adventure: %s\n", err)
-	}
+var templates = template.Must(template.ParseFiles("./templates/view.html"))
+var adventure = loadAdventure("adventure.json")
 
+func loadAdventure(filename string) Adventure {
+	adventureBytes, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
 	var adventure Adventure
 	json.Unmarshal(adventureBytes, &adventure)
+	return adventure
+}
 
-	fmt.Println("adventure:")
-	pretty.Println(adventure)
+func getAdventure(w http.ResponseWriter, r *http.Request) {
+	path := strings.Split(r.URL.Path, "/")
+
+	var storyArc string
+	if path[1] == "" {
+		storyArc = "intro"
+	} else {
+		storyArc = path[1]
+	}
+
+	err := templates.ExecuteTemplate(w, "view.html", adventure[storyArc])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func main() {
+	http.HandleFunc("/", getAdventure)
+	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
