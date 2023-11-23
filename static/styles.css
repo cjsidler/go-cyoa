@@ -1,8 +1,38 @@
 h1,
 h2 {
     color: dodgerblue;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+}
+
+a,
+p {
+    font-family: "EB Garamond", serif;
+    font-size: large;
+}
+
+a,
+a:visited,
+a:active {
+    color: inherit;
+    text-decoration: none;
+    color: dodgerblue;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    padding-left: 0;
 }
 
 #container {
-    background-color: lightgoldenrodyellow;
+    background-color: floralwhite;
+    margin: 60px auto;
+    width: 80%;
+    max-width: 600px;
+    padding: 60px 40px;
+    border: 1px solid #ddd;
+    box-shadow: 0 10px 6px -6px #777;
 }
