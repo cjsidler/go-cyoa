@@ -43,29 +43,23 @@ The Golang Create Your Own Adventure web application reads in a story provided b
 
 ```json
 {
-  // Each story arc will have a unique key that represents
-  // the name of that particular arc. Each story will have
-  // an "intro" story arc that represents the first arc.
-  "story-arc": {
-    "title": "A title for that story arc. Think of it like a chapter title.",
-    "story": [
-      "A series of paragraphs, each represented as a string in a slice.",
-      "This is a new paragraph in this particular story arc."
-    ],
-    // Options will be empty if it is the end of that
-    // particular story arc. Otherwise it will have one or
-    // more JSON objects that represent an "option" that the
-    // reader has at the end of a story arc.
-    "options": [
-      {
-        "text": "the text to render for this option. eg 'venture down the dark passage'",
-        "arc": "the name of the story arc to navigate to. This will match the story-arc key at the very root of the JSON document"
-      }
-    ]
-  },
-  ...
+    "story-arc": {
+        "title": "A title for that story arc. Think of it like a chapter title.",
+        "story": [
+            "A series of paragraphs, each represented as a string in a slice.",
+            "This is a new paragraph in this particular story arc."
+        ],
+        "options": [
+            {
+                "text": "the text to render for this option. eg 'venture down the dark passage'",
+                "arc": "the name of the story arc to navigate to. This will match the story-arc key at the very root of the JSON document"
+            }
+        ]
+    }
 }
 ```
+
+Each story arc will have a unique key that represents the name of that particular arc, and each adventure will have a story arc with the key "intro" that represents the first story arc of the adventure. Options will be empty if it is the end of that particular story arc. Otherwise, options will have one or more JSON objects that represent an "option" that the reader has at the end of a story arc.
 
 The story is made available to the user using Go templates and http routes. If a user visits the root route (i.e., http://localhost:8080/), the user will be shown the intro story arc.
 
