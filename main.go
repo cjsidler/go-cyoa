@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -23,7 +25,6 @@ type StoryArc struct {
 type Adventure map[string]StoryArc
 
 var templates = template.Must(template.ParseFiles("./templates/view.html"))
-var adventure = loadAdventure("adventure.json")
 
 func loadAdventure(filename string) Adventure {
 	adventureBytes, err := os.ReadFile(filename)
@@ -35,26 +36,35 @@ func loadAdventure(filename string) Adventure {
 	return adventure
 }
 
-func getAdventure(w http.ResponseWriter, r *http.Request) {
-	path := strings.Split(r.URL.Path, "/")
+func getAdventureHandler(filename string) http.HandlerFunc {
+	adventure := loadAdventure(filename)
 
-	var storyArc string
-	if path[1] == "" {
-		storyArc = "intro"
-	} else {
-		storyArc = path[1]
-	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := strings.Split(r.URL.Path, "/")
 
-	err := templates.ExecuteTemplate(w, "view.html", adventure[storyArc])
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		var storyArc string
+		if path[1] == "" {
+			storyArc = "intro"
+		} else {
+			storyArc = path[1]
+		}
+
+		err := templates.ExecuteTemplate(w, "view.html", adventure[storyArc])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 
 func main() {
+	filename := flag.String("filename", "adventure.json", "the JSON file with the Choose-Your-Own-Adventure story")
+	flag.Parse()
+
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.HandleFunc("/", getAdventure)
+	http.HandleFunc("/", getAdventureHandler(*filename))
+
+	fmt.Println("Listening on port 8080...")
 	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
