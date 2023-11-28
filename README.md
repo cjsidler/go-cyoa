@@ -63,6 +63,8 @@ Each story arc will have a unique key that represents the name of that particula
 
 The story is made available to the user using Go templates and http routes. If a user visits the root route (i.e., http://localhost:8080/), the user will be shown the intro story arc.
 
+The story JSON file defaults to "adventure.json", but the user can choose a different file by using the "-filename" flag followed by the name of the JSON file.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- BUILT WITH -->
@@ -96,7 +98,7 @@ The story is made available to the user using Go templates and http routes. If a
     ```
 3. Run the executable.
     ```sh
-    .\go-cli-quizzer.exe
+    .\go-cyoa.exe -filename "mystory.json"
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
